@@ -918,6 +918,25 @@ inline void tmc_standby_setup() {
   #endif
 }
 
+char fuzz_input[256];
+volatile uint16_t fuzz_input_length;
+
+
+void myFunction() {
+  if (fuzz_input_length >= 255) return;
+  fuzz_input[fuzz_input_length] = '\0';
+  MYSERIAL0.println(fuzz_input);
+  //volatile GCodeParser gCodeParser;
+  //gCodeParser.parse("G01 Z0.1 F5.");
+  parser.parse(fuzz_input);
+  GcodeSuite::process_parsed_command();
+}
+
+void reset_here() {
+  volatile int i = 0;
+  //MYSERIAL0.println(i);
+}
+
 /**
  * Marlin entry-point: Set up before the program loop
  *  - Set up the kill pin, filament runout, power hold
@@ -938,6 +957,15 @@ inline void tmc_standby_setup() {
  *    • Max7219
  */
 void setup() {
+
+  MYSERIAL0.begin(BAUDRATE);
+  //MYSERIAL0.println("HI");
+
+  myFunction();
+  reset_here();
+
+  //MYSERIAL0.println("We dont want to see this");
+  //delay(1000000);
 
   tmc_standby_setup();  // TMC Low Power Standby pins must be set early or they're not usable
 

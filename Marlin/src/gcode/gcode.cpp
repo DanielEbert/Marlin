@@ -262,7 +262,7 @@ void GcodeSuite::process_parsed_command(const bool no_ok/*=false*/) {
     case 'G': switch (parser.codenum) {
 
       case 0: case 1:                                             // G0: Fast Move, G1: Linear Move
-        G0_G1(TERN_(HAS_FAST_MOVES, parser.codenum == 0)); break;
+        MYSERIAL0.println("case01");G0_G1(TERN_(HAS_FAST_MOVES, parser.codenum == 0)); break;
 
       #if ENABLED(ARC_SUPPORT) && DISABLED(SCARA)
         case 2: case 3: G2_G3(parser.codenum == 2); break;        // G2: CW ARC, G3: CCW ARC
@@ -939,6 +939,7 @@ void GcodeSuite::process_parsed_command(const bool no_ok/*=false*/) {
       #endif
       parser.unknown_command_warning();
   }
+
 
   if (!no_ok) queue.ok_to_send();
 }
